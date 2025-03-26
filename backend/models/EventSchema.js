@@ -8,7 +8,7 @@ const EventSchema = new mongoose.Schema({
     ticket_price:{type:String,required:true},   
     venue:{type:String,required:true},
     description:{type:String,required:true},
-    image_url:{type:String,required:true},
+    image_url:{data: Buffer, contentType: String},
     avail_ticket:{type:Number,max:100},
 })
 

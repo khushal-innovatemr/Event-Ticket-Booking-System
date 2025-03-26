@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'    
@@ -9,21 +10,27 @@ import { Observable } from 'rxjs';
 export class EventService {
   private API_URL = 'http://localhost:3000/event';
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router,private authService:AuthService) {}
 
-  private header_options = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json'
-    }),
-    withCredentials: true
-  };
 
-  Add_event(name:string,Event_date:Date,Event_id:string,ticket_price:Number,venue:string,description:string,image_url:string,type:any,avail_ticket:Number):Observable<any>{
-    return this.http.post(`${this.API_URL}/add-event`, {name, Event_date, Event_id, ticket_price, venue ,description ,image_url ,type,avail_ticket}, this.header_options);
+  private getHeaders(): HttpHeaders {
+    const token = this.authService.getToken();
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
+  }
+
+  Add_event(formData:FormData):Observable<any>{
+    return this.http.post(`${this.API_URL}/add-event`,formData);
   }
 
   view_event():Observable<any> {
-    return this.http.get(`${this.API_URL}/view-event`);
+    return this.http.get(`${this.API_URL}/view-event`,{headers:this.getHeaders(),withCredentials:true});
+  }
+
+  book_event(eventId: string): Observable<any> {
+    return this.http.post(`${this.API_URL}/book/${eventId}`, {}); 
   }
 }
 

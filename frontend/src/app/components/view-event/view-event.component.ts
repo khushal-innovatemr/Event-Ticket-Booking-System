@@ -14,6 +14,8 @@ export class ViewEventComponent implements OnInit {
   events: any = [];
   noeventmessage: string = '';
   noTaskMessage: any;
+  books: any;
+  errorMessage: any;
 
   constructor(private eventService: EventService, private router: Router) { }
 
@@ -23,18 +25,34 @@ export class ViewEventComponent implements OnInit {
 
   SeeEvents(): void {
     this.eventService.view_event().subscribe({
-      next: (res: any) => {
-        if (res.message) {
-          console.log('No Events message:', res.message);
-          this.events = [];
-          this.noeventmessage = res.message;
-        } else {
-          this.events = res;
+        next: (res: any) => {
+            if (res.message) {
+                console.log('No Events message:', res.message);
+                this.events = [];
+                this.noeventmessage = res.message;
+            } else {
+                this.events = res;
+
+                this.events.forEach((v: any) => {
+                  console.log('Event ID:', v.Event_id);
+              });
+            }
+        },
+        error: (err) => {
+            console.error('Error fetching events:', err);
         }
-      },
-      error: (err) => {
-        console.error('Error fetching events:', err);
-      }
     });
-  }
+}
+book(eventId: string): void {
+  this.eventService.book_event(eventId).subscribe({
+      next: (res: any) => {
+          if (res.message) {
+              this.books = [];
+          }
+      },
+      error: (err: any) => {
+          this.errorMessage = err.error.error;
+      }
+  });
+}
 }

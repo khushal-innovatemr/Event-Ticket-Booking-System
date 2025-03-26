@@ -7,49 +7,87 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-add-event',
   standalone: true,
-  imports: [FormsModule,CommonModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './add-event.component.html',
   styleUrl: './add-event.component.css'
 })
 export class AddEventComponent {
-
   name = '';
-  Event_date:any; 
-  Event_id:any;
-  ticket_price:any;
-  venue:any ;
-  description:any;
-  image_url:any ;
-  avail_ticket:any;
-  successMessage:any = '';
+  Event_date: any; 
+  Event_id: any;
+  ticket_price: any;
+  venue: any;
+  description: any;
+  image: File | null = null; // Changed from image_url
+  avail_ticket: any;
+  successMessage: any = '';
   errorMessage: any;
   type: any;
+  imageError: any;
+  books: any;
 
   constructor(private eventService: EventService, private router: Router) {}
 
   add(): void {
-    this.eventService.Add_event(this.name,this.Event_date, this.Event_id,this.ticket_price,this.venue,this.description,this.image_url,this.type,this.avail_ticket).subscribe({
+    const formData = new FormData();
+    formData.append('name', this.name); 
+    formData.append('Event_date', this.Event_date);
+    formData.append('ticket_price', this.ticket_price);
+    formData.append('venue', this.venue);
+    formData.append('description', this.description);
+    formData.append('type', this.type);
+    formData.append('avail_ticket', this.avail_ticket);
+    
+    if (this.image) {
+      formData.append('image', this.image);
+    }
+
+    this.eventService.Add_event(formData).subscribe({
       next: (v) => {
         console.log(v);
         this.successMessage = 'Event Created!';
         this.router.navigate(['/view']);
+        this.resetForm();
       },
       error: (err) => (this.errorMessage = err.error.error)
     });
-    this.resetForm();
   }
-  
+
+  book(userId:string):void{
+    this.eventService.book_event(userId).subscribe({
+      next:(res:any) => {
+        if(res.message){
+          this.books = [];
+        }
+      },
+      error: (err:any) => (this.errorMessage = err.error.error)
+    })
+  }
+
+
   resetForm() {
     this.name = '';
     this.description = '';
-    this.Event_date = null
-    this.Event_id = ''
+    this.Event_date = null;
+    this.Event_id = '';
     this.ticket_price = '';
     this.venue = '';
     this.type = '';
-    this.image_url = '';
+    this.image = null; 
     this.avail_ticket = '';
-
   }
-
+   
+  fileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+      if (!validTypes.includes(file.type)) {
+        this.imageError = 'Only JPG, JPEG, or PNG files are allowed.';
+        this.image = null;
+      } else {
+        this.imageError = null;
+        this.image = file;
+      }
+    }
+  }
 }

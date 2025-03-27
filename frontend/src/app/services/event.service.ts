@@ -35,7 +35,7 @@ export class EventService {
   }
 
   getUsers(): Observable<any> {
-    return this.http.get(`${this.API_URL}/views`);
+    return this.http.get(`${this.API_URL}/views`,{headers:this.getHeaders(),withCredentials:true});
   }
 }
 

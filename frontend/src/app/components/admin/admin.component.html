@@ -24,48 +24,45 @@
               class="ml-auto bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-6 rounded-md transition duration-300 ease-in-out transform hover:scale-105">
         Logout
       </button> -->
-
-      <div class="max-w-6xl mx-auto">
-        <div class="flex flex-col my-3 p-6 rounded-xl bg-white shadow-xl hover:shadow-2xl transition-all duration-300">
-            <button (click)="CheckUser()"
-                class="bg-green-500 hover:bg-green-600 active:bg-green-700 p-4 rounded-lg text-white font-semibold shadow-lg transition duration-200 mb-4 flex items-center w-40">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                    <path
-                        d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
-                </svg>
-                View Users
-            </button>
-
-            <div class="overflow-x-auto">
-                <table class="min-w-full bg-white shadow-lg rounded-xl overflow-hidden">
-                    <thead class="bg-gray-100">
-                        <tr>
-                            <th class="py-3 px-6 text-left text-gray-600 font-semibold">Name</th>
-                            <th class="py-3 px-6 text-left text-gray-600 font-semibold">Role</th>
-                            <th class="py-3 px-6 text-left text-gray-600 font-semibold">Assigned By</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for (task of tasks; track task.id) {
-                        <tr class="hover:bg-blue-50 transition duration-200 border-b border-gray-100">
-                            <td class="py-4 px-6 text-gray-700">{{ task.name }}</td>
-                            <td class="py-4 px-6">
-                                <span
-                                    class="px-3 py-1 rounded-full text-xs font-medium {{ task.role === 'manager' ? 'bg-purple-100 text-red-800' : 'bg-blue-100 text-blue-800' }}">
-                                    {{ task.role }}
-                                </span>
-                            </td>
-                            <!-- <td class="py-4 px-6 text-gray-700">{{task.createdby}}</td> -->
-                        </tr>
-                        }
-                    </tbody>
-                </table>
+      
+    </div>
+    
+          <div class="max-w-6xl mx-auto">
+            <div class="flex flex-col my-3 p-6 rounded-xl bg-white shadow-xl hover:shadow-2xl transition-all duration-300">
+                <button (click)="CheckUser()"
+                    class="bg-green-500 hover:bg-green-600 active:bg-green-700 p-4 rounded-lg text-white font-semibold shadow-lg transition duration-200 mb-4 flex items-center w-40">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path
+                            d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+                    </svg>
+                    View Users
+                </button>
+    
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white shadow-lg rounded-xl overflow-hidden">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="py-3 px-6 text-left text-gray-600 font-semibold">Name</th>
+                                <th class="py-3 px-6 text-left text-gray-600 font-semibold">Role</th>
+                                <th class="py-3 px-6 text-left text-gray-600 font-semibold">Assigned By</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (task of tasks; track task.id) {
+                            <tr class="hover:bg-blue-50 transition duration-200 border-b border-gray-100">
+                                <td class="py-4 px-6 text-gray-700">{{ task.name }}</td>
+                                <td class="py-4 px-6">
+                                    <span
+                                        class="px-3 py-1 rounded-full text-xs font-medium {{ task.role === 'manager' ? 'bg-purple-100 text-red-800' : 'bg-blue-100 text-blue-800' }}">
+                                        {{ task.role }}
+                                    </span>
+                                </td>
+                                <!-- <td class="py-4 px-6 text-gray-700">{{task.createdby}}</td> -->
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
-
-
-
-
-    </div>
   </div>

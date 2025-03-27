@@ -5,6 +5,7 @@ import { AddEventComponent } from './components/add-event/add-event.component';
 import { ViewEventComponent } from './components/view-event/view-event.component';
 import { AdminRegisterComponent } from './components/admin-register/admin-register.component';
 import { AdminComponent } from './components/admin/admin.component';
+import { AuthGuard } from '../../auth.guard';
 
 export const routes: Routes = [
     {
@@ -22,6 +23,7 @@ export const routes: Routes = [
     {
         path:'view',
         component:ViewEventComponent,
+        canActivate:[AuthGuard]
     },
     {
         path:'admin-register',

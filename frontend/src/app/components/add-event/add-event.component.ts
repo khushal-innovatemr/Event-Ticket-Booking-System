@@ -25,7 +25,7 @@ export class AddEventComponent {
   type: any;
   imageError: any;
   books: any;
-
+ 
   constructor(private eventService: EventService, private router: Router) {}
 
   add(): void {
@@ -53,17 +53,7 @@ export class AddEventComponent {
     });
   }
 
-  book(userId:string):void{
-    this.eventService.book_event(userId).subscribe({
-      next:(res:any) => {
-        if(res.message){
-          this.books = [];
-        }
-      },
-      error: (err:any) => (this.errorMessage = err.error.error)
-    })
-  }
-
+  
 
   resetForm() {
     this.name = '';

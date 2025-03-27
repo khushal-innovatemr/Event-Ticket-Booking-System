@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { EventService } from '../../services/event.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-view-event',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,FormsModule],
   templateUrl: './view-event.component.html',
   styleUrls: ['./view-event.component.css']
 })
@@ -16,6 +17,7 @@ export class ViewEventComponent implements OnInit {
   noTaskMessage: any;
   books: any;
   errorMessage: any;
+  Ticket: any;
 
   constructor(private eventService: EventService, private router: Router) { }
 
@@ -35,7 +37,7 @@ export class ViewEventComponent implements OnInit {
 
                 this.events.forEach((v: any) => {
                   console.log('Event ID:', v.Event_id);
-              });
+              }); 
             }
         },
         error: (err) => {
@@ -44,10 +46,12 @@ export class ViewEventComponent implements OnInit {
     });
 }
 book(eventId: string): void {
-  this.eventService.book_event(eventId).subscribe({
+  this.eventService.book_event(eventId,this.Ticket).subscribe({
       next: (res: any) => {
           if (res.message) {
               this.books = [];
+              this.SeeEvents();
+              this.Ticket = '';
           }
       },
       error: (err: any) => {

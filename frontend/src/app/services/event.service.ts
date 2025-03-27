@@ -29,8 +29,13 @@ export class EventService {
     return this.http.get(`${this.API_URL}/view-event`,{headers:this.getHeaders(),withCredentials:true});
   }
 
-  book_event(eventId: string): Observable<any> {
-    return this.http.post(`${this.API_URL}/book/${eventId}`, {}); 
+  book_event(eventId: string,Ticket:number): Observable<any> {
+    const token = localStorage.getItem('token');
+    return this.http.post(`${this.API_URL}/book/${eventId}`, {Ticket}, {headers:this.getHeaders() });
+  }
+
+  getUsers(): Observable<any> {
+    return this.http.get(`${this.API_URL}/views`);
   }
 }
 

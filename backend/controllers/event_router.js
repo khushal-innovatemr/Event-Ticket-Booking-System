@@ -44,7 +44,8 @@ router.post('/add-event', upload.single('image'), async (req, res) => {
 
 router.get('/view-event',verify, async (req, res) => {
     try {
-        const dec = req.user.userId;
+        const role = req.user.role;
+        console.log(role);        
         const ViewEvents = await Event.find({}, 'name description Event_id Event_date ticket_price venue type avail_ticket image_url').sort({ type: 1 });
         const eventsWithImageUrl = ViewEvents.map(event => ({
                 ...event._doc,
@@ -60,25 +61,33 @@ router.get('/view-event',verify, async (req, res) => {
 
 router.post('/book/:id', verify, async (req, res) => {
     try {
-        const userId = req.user.userId;
-        const evId = req.params.id;
+        const {Ticket} = req.body;
+        console.log(req.body);
+        const Booking_id = req.user.userId;
+        const evId = req.params.id; 
+    
         
-        const event = await Event.findOne({ Event_id: evId }); 
-        console.log(userId);
-        console.log(evId);
-        const date = Date.now();
+        const event = await Event.findOne({ Event_id: evId });
+        if (!event) {
+            return res.status(404).json({ message: "Event not found" });
+        }
         
-        const existingBooking = await Booking.findOne({ userId, eventId: evId });
-        if (existingBooking) {
-            return res.status(400).json({ message: "You have already booked the ticket" });
+        if (event.avail_ticket <= 0) {
+            return res.status(400).json({ message: "No tickets available" });
         }
 
-        const newBooking = new Booking({ userId, eventId: evId, date });
+        const existingBooking = await Booking.findOne({ Booking_id:Booking_id, Event_id: evId });
+        // if (existingBooking) {
+        //     return res.status(400).json({ message: "You have already booked the ticket" });
+        // }
+
+        const date = Date.now();
+        const newBooking = new Booking({ Booking_id, Event_id: evId, date ,Ticket});
+        
+        event.avail_ticket -= Ticket;
+        const updateResult = await Event.updateOne({ Event_id: evId }, { avail_ticket: event.avail_ticket });
+
         await newBooking.save();
-
-        event.avail_ticket -= 1;
-        await event.save();
-
         res.status(200).json({ message: "Booking successful" });
     } catch (err) {
         console.error("Unable to book tickets", err);
@@ -86,24 +95,22 @@ router.post('/book/:id', verify, async (req, res) => {
     }
 });
 
+router.get('/views', verify, async (req, res) => {
+    const role = req.user.role;
+    console.log('x',role);        
+    if (req.user.role === 'admin') {
+      try {
+        const users = await User.find({ role: { $in: ['user', 'organizer'] } }, 'name email role');
+        return res.json(users);
+      } catch (err) {
+        console.error("Fetching users error:", err);
+        res.status(500).json({ error: "Server Error" });
+      }
+    } else {
+      res.status(403).json({ error: "Access denied" });
+    }
+  });
 
 
-// router.get('/view/:id', verify, async (req, res) => {
-//     try {
-//       const userId = req.user.id;
-//       const targetId = req.params.id;
-  
-//       const viewTasks = await Todo.find({ userId: targetId });
-  
-//       if (!viewTasks || viewTasks.length === 0) {
-//         return res.status(203).json({ message: "No tasks found for this user" });
-//       }
-  
-//       return res.json(viewTasks);
-//     } catch (err) {
-//       console.error("View tasks error:", err);
-//       return res.status(500).json({ error: "Server Error" });
-//     }
-//   });
 
 module.exports = router;

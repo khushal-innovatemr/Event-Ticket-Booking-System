@@ -33,15 +33,15 @@ export class LoginComponent {
         this.message = 'Token Verified!!';
         this.isSuccess = true;
 
-        setTimeout(() => {
+        if (res.role === 'admin') {
+          this.message = 'Redirecting to Admin Dashboard';
+          this.router.navigate(['/admin']);
+          return;
+        }
           this.showRedirectMessage = true;
           this.message = 'Redirecting to Dashboard...';
-
-          setTimeout(() => {
-            this.router.navigate(['/event']);
-          }, 2000);
+          this.router.navigate(['/event']);
           
-        }, 2000);
       },
       error: (err) => {
         this.errorMessage = err.error.error;

@@ -1,10 +1,23 @@
 const mongoose = require('mongoose');
 
 const BookingSchema = new mongoose.Schema({
-    booking_date:{type:Date,default:Date.now()},
-    Booking_id:{type:String,required:true,ref:'User'},
-    Event_id:{type:String,required:true,ref:'Event'},
+    Booking_id: {
+        type: String,
+        required: true
+    },
+    Event_id: {
+        type: String,
+        required: true
+    },
+    date: {
+        type: Date,
+        default: Date.now
+    },
+    Ticket:{
+        type:Number,
+        required:true
+    }
 })
 
-const Booking = mongoose.model("Event",BookingSchema);
+const Booking = mongoose.model("Booking",BookingSchema);
 module.exports = Booking;

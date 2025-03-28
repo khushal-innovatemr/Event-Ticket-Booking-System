@@ -38,6 +38,11 @@ export class LoginComponent {
           this.router.navigate(['/admin']);
           return;
         }
+        else if(res.role === 'organizer'){
+          this.message = 'Redirecting to Organizer View';
+          this.router.navigate(['/organise']);
+          return;
+        }
           this.showRedirectMessage = true;
           this.message = 'Redirecting to Dashboard...';
           this.router.navigate(['/user']);

@@ -12,6 +12,7 @@ import { AdminGuard } from './admin.guard';
 import { AdminViewComponent } from './components/admin-view/admin-view.component';
 import { UserViewComponent } from './components/user-view/user-view.component';
 import { UserComponent } from './components/user/user.component';
+import { OrganizerComponent } from './components/organizer/organizer.component';
 
 export const routes: Routes = [
     {
@@ -56,6 +57,10 @@ export const routes: Routes = [
     {
         path: 'user',
         component:UserComponent
+    },
+    {
+        path:'organise',
+        component:OrganizerComponent
     }
    
 ];

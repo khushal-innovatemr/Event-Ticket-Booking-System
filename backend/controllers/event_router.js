@@ -139,18 +139,13 @@ router.get('/ticket',verify,async(req,res) => {
 
 
 router.get('/organizer',verify,async(req,res) => {
-        try {
-            const role = req.user.role;
-            const ViewEvents = await Event.find({}, 'name description Event_id Event_date ticket_price venue type avail_ticket image_url').sort({ type: 1 });
-            const eventsWithImageUrl = ViewEvents.map(event => ({
-                    ...event._doc,
-                    image_url: (event.image_url && event.image_url.data) ? `data:${event.image_url.contentType};base64,${event.image_url.data.toString('base64')}` : null
-                }));
-            return res.json(eventsWithImageUrl);
-        } catch (err) {
-            console.error("View event error:", err);
-            return res.status(500).json({ error: "Server Error" });
-        }
+    const booking_id = req.user.userId
+    const generate_ticket = await Event.find({organizer_id:booking_id})
+    console.log(generate_ticket);
+    if(!generate_ticket){
+        return res.status(200).json({message:'No Bookings Found for the user'})
+    }
+    return res.json(generate_ticket);
 })
 
 

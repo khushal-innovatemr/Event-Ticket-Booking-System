@@ -21,8 +21,6 @@ export class EventService {
   }
 
   Add_event(formData:any):Observable<any>{
-    console.log('###################',formData);
-    
     return this.http.post(`${this.API_URL}/add-event`,formData,{headers:this.getHeaders(),withCredentials:true});
   }
 
@@ -45,6 +43,10 @@ export class EventService {
 
   generateTicket():Observable<any> {
     return this.http.get(`${this.API_URL}/ticket`,{headers:this.getHeaders(),withCredentials:true});
+  }
+
+  organize_view():Observable<any> {
+    return this.http.get(`${this.API_URL}/organizer`,{headers:this.getHeaders(),withCredentials:true})
   }
 }
 

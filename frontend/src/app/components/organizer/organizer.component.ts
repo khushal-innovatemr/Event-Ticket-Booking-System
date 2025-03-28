@@ -29,6 +29,8 @@ OrganizerView():void{
         this.noeventmessage = res.message;
       } else {
         this.events = res;
+        console.log(this.events.image_url);
+        console.log(res);
 
         this.events.forEach((v: any) => {
           // console.log('Event ID:', v.Event_id);

@@ -16,16 +16,21 @@ export class EventService {
   private getHeaders(): HttpHeaders {
     const token = this.authService.getToken();
     return new HttpHeaders({
-      'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
     });
   }
 
-  Add_event(formData:FormData):Observable<any>{
-    return this.http.post(`${this.API_URL}/add-event`,formData);
+  Add_event(formData:any):Observable<any>{
+    console.log('###################',formData);
+    
+    return this.http.post(`${this.API_URL}/add-event`,formData,{headers:this.getHeaders(),withCredentials:true});
   }
 
   view_event():Observable<any> {
+    return this.http.get(`${this.API_URL}/view-event`,{headers:this.getHeaders(),withCredentials:true});
+  }
+
+  admin_view():Observable<any> {
     return this.http.get(`${this.API_URL}/view-event`,{headers:this.getHeaders(),withCredentials:true});
   }
 
@@ -36,6 +41,10 @@ export class EventService {
 
   getUsers(): Observable<any> {
     return this.http.get(`${this.API_URL}/views`,{headers:this.getHeaders(),withCredentials:true});
+  }
+
+  generateTicket():Observable<any> {
+    return this.http.get(`${this.API_URL}/ticket`,{headers:this.getHeaders(),withCredentials:true});
   }
 }
 

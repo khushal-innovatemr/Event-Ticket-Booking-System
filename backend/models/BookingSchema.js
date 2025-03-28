@@ -9,6 +9,10 @@ const BookingSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    Event_name:{
+        type:String,
+        required:true
+    },
     date: {
         type: Date,
         default: Date.now

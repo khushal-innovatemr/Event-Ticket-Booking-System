@@ -31,6 +31,10 @@ export class AdminComponent {
     this.authService.logout();
   }
 
+  ViewEvents():void{
+    this.router.navigate(['/admin-view']);
+  }
+
   CheckUser(): void {
     if(this.flag){
       this.flag = !this.flag

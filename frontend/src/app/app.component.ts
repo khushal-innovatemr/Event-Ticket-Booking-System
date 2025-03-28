@@ -3,6 +3,7 @@ import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { AuthService } from './services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { EventService } from './services/event.service';
 
 @Component({
   selector: 'app-root',
@@ -13,18 +14,42 @@ import { CommonModule } from '@angular/common';
 })
 export class AppComponent {
   title = 'Event App';
+  events: any;
+  noeventmessage: any;
   
   constructor(
     private authService:AuthService,
+    private eventService:EventService,
     private router: Router
   ) {}
   
   ngOnInit(): void {
     if (this.authService.isAuthenticated()) {
-      this.router.navigate(['/'])
+      this.ViewEvents();
     } else {
       this.router.navigate(['/login']);
     }
+  }
+
+  ViewEvents():void{
+    this.eventService.view_event().subscribe({
+      next: (res: any) => {
+          if (res.message) {
+              console.log('No Events message:', res.message);
+              this.events = [];
+              this.noeventmessage = res.message;
+          } else {
+              this.events = res;
+
+              this.events.forEach((v: any) => {
+                // console.log('Event ID:', v.Event_id);
+            }); 
+          }
+      },
+      error: (err) => {
+          console.error('Error fetching events:', err);
+      }
+  });
   }
   
   isLoggedIn(): boolean {

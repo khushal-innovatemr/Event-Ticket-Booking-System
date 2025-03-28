@@ -44,6 +44,7 @@ export class AddEventComponent {
 
     this.eventService.Add_event(formData).subscribe({
       next: (v) => {
+        console.log('---------------------------------------x',formData);
         console.log(v);
         this.successMessage = 'Event Created!';
         this.router.navigate(['/view']);

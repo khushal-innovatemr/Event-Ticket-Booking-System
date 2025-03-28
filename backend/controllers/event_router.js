@@ -22,9 +22,11 @@ app.use(bodyParser.json());
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-router.post('/add-event', upload.single('image'), async (req, res) => {
+router.post('/add-event',verify, upload.single('image'), async (req, res) => {
     const { name, Event_date, ticket_price, venue, description, type, avail_ticket} = req.body;
     const Event_id = uuidv4();
+
+    const organizer_id = req.user.userId;
 
     try {
         let event = await Event.findOne({ name });
@@ -32,7 +34,7 @@ router.post('/add-event', upload.single('image'), async (req, res) => {
 
         const imageData = req.file ? { data: req.file.buffer, contentType: req.file.mimetype } : null;
 
-        event = new Event({ name, Event_date, Event_id, ticket_price, venue, description, type, image_url: imageData, avail_ticket });
+        event = new Event({ name, Event_date, Event_id,organizer_id,ticket_price, venue, description, type, image_url: imageData, avail_ticket });
         await event.save();
         return res.send({ msg: "Event Registered Successfully" });
     } catch (error) {
@@ -45,7 +47,6 @@ router.post('/add-event', upload.single('image'), async (req, res) => {
 router.get('/view-event',verify, async (req, res) => {
     try {
         const role = req.user.role;
-        console.log(role);        
         const ViewEvents = await Event.find({}, 'name description Event_id Event_date ticket_price venue type avail_ticket image_url').sort({ type: 1 });
         const eventsWithImageUrl = ViewEvents.map(event => ({
                 ...event._doc,
@@ -58,11 +59,24 @@ router.get('/view-event',verify, async (req, res) => {
     }
 });
 
+router.get('/admin-view',verify, async (req, res) => {
+    try {
+        const role = req.user.role;
+        const ViewEvents = await Event.find({}, 'name description Event_id Event_date ticket_price venue type avail_ticket image_url').sort({ type: 1 });
+        const eventsWithImageUrl = ViewEvents.map(event => ({
+                ...event._doc,
+                image_url: (event.image_url && event.image_url.data) ? `data:${event.image_url.contentType};base64,${event.image_url.data.toString('base64')}` : null
+            }));
+        return res.json(eventsWithImageUrl);
+    } catch (err) {
+        console.error("View event error:", err);
+        return res.status(500).json({ error: "Server Error" });
+    }
+});
 
 router.post('/book/:id', verify, async (req, res) => {
     try {
         const {Ticket} = req.body;
-        console.log(req.body);
         const Booking_id = req.user.userId;
         const evId = req.params.id; 
     
@@ -71,6 +85,8 @@ router.post('/book/:id', verify, async (req, res) => {
         if (!event) {
             return res.status(404).json({ message: "Event not found" });
         }
+        const ab = event.name;
+        
         
         if (event.avail_ticket <= 0) {
             return res.status(400).json({ message: "No tickets available" });
@@ -82,7 +98,7 @@ router.post('/book/:id', verify, async (req, res) => {
         // }
 
         const date = Date.now();
-        const newBooking = new Booking({ Booking_id, Event_id: evId, date ,Ticket});
+        const newBooking = new Booking({ Booking_id, Event_id: evId,Event_name:ab, date ,Ticket});
         
         event.avail_ticket -= Ticket;
         const updateResult = await Event.updateOne({ Event_id: evId }, { avail_ticket: event.avail_ticket });
@@ -111,6 +127,31 @@ router.get('/views', verify, async (req, res) => {
     }
   });
 
+router.get('/ticket',verify,async(req,res) => {
+    const booking_id = req.user.userId
+    const generate_ticket = await Booking.find({Booking_id:booking_id})
+    console.log(generate_ticket);
+    if(!generate_ticket){
+        return res.status(200).json({message:'No Bookings Found for the user'})
+    }
+    return res.json(generate_ticket);
+})
+
+
+router.get('/organizer',verify,async(req,res) => {
+        try {
+            const role = req.user.role;
+            const ViewEvents = await Event.find({}, 'name description Event_id Event_date ticket_price venue type avail_ticket image_url').sort({ type: 1 });
+            const eventsWithImageUrl = ViewEvents.map(event => ({
+                    ...event._doc,
+                    image_url: (event.image_url && event.image_url.data) ? `data:${event.image_url.contentType};base64,${event.image_url.data.toString('base64')}` : null
+                }));
+            return res.json(eventsWithImageUrl);
+        } catch (err) {
+            console.error("View event error:", err);
+            return res.status(500).json({ error: "Server Error" });
+        }
+})
 
 
 module.exports = router;

@@ -40,7 +40,7 @@ export class LoginComponent {
         }
           this.showRedirectMessage = true;
           this.message = 'Redirecting to Dashboard...';
-          this.router.navigate(['/event']);
+          this.router.navigate(['/user']);
           
       },
       error: (err) => {

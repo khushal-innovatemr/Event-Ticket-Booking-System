@@ -36,7 +36,7 @@ export class ViewEventComponent implements OnInit {
                 this.events = res;
 
                 this.events.forEach((v: any) => {
-                  console.log('Event ID:', v.Event_id);
+                  // console.log('Event ID:', v.Event_id);
               }); 
             }
         },
@@ -46,17 +46,21 @@ export class ViewEventComponent implements OnInit {
     });
 }
 book(eventId: string): void {
-  this.eventService.book_event(eventId,this.Ticket).subscribe({
-      next: (res: any) => {
+  for (let event of this.events) {
+    if (eventId === event.Event_id) {
+      this.eventService.book_event(eventId, event.Ticket).subscribe({
+        next: (res: any) => {
           if (res.message) {
-              this.books = [];
-              this.SeeEvents();
-              this.Ticket = '';
+            this.books = [];
+            this.SeeEvents();
+            this.Ticket = '';
           }
-      },
-      error: (err: any) => {
+        },
+        error: (err: any) => {
           this.errorMessage = err.error.error;
-      }
-  });
+        }
+      });
+    }
+  }
 }
 }
